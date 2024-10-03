@@ -1,4 +1,4 @@
-<p style="color: green"><%= notice %></p>
+<!--   <p style="color: green"><%= notice %></p>
 
 <%= render @post %>
 
@@ -8,3 +8,37 @@
 
   <%= button_to "Destroy this post", @post, method: :delete %>
 </div>
+-->
+
+<h1><%= @post.title %></h1>
+<p><%= @post.content %></p>
+
+<h2>Comentarios</h2>
+
+<% @post.comments.each do |comment| %>
+  <div>
+    <p><strong><%= comment.user.email %>:</strong> <%= comment.content %></p>
+    <% if user_signed_in? && current_user.admin? %>
+      <%= link_to 'Eliminar', post_comment_path(@post, comment), method: :delete, data: { confirm: '¿Estás seguro?' } %>
+    <% end %>
+  </div>
+<% end %>
+
+<% if user_signed_in? %>
+  <h3>Agregar un comentario</h3>
+  <%= form_with(model: [@post, @post.comments.build]) do |form| %>
+    <div>
+      <%= form.label :content %><br>
+      <%= form.text_area :content %>
+    </div>
+    <div>
+      <%= form.submit 'Publicar Comentario' %>
+    </div>
+  <% end %>
+<% else %>
+  <p>Debes <%= link_to 'iniciar sesión', new_user_session_path %> o <%= link_to 'registrarte', new_user_registration_path %> para dejar un comentario.</p>
+<% end %>
+
+
+
+
